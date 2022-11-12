@@ -4,7 +4,7 @@ import numpy as np
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .Models import MatrixInverter
-from .seriaaizers import MatrixSerializer
+from .serializers import MatrixSerializer
 
 
 
