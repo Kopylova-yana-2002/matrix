@@ -3,7 +3,7 @@ from django.http import HttpResponse
 import numpy as np
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from matrix_calculator import MatrixCalculator
+from .matrix_calculator import MatrixCalculator
 from .Models import MatrixInverter
 from .serializers import MatrixSerializer
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
@@ -79,7 +79,7 @@ class MatrixInverterView(APIView):
                 return Response('В матрице содержатся недопустимые значения', 400)
 
             if len(row) != size:
-                return Response('Реверный размер строки в матрице', 400)
+                return Response('Неверный размер строки в матрице', 400)
 
             new_matrix.append(row)
 
