@@ -3,9 +3,11 @@ from django.http import HttpResponse
 import numpy as np
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from matrix_calculator import MatrixCalculator
 from .Models import MatrixInverter
 from .serializers import MatrixSerializer
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+
 
 
 
@@ -83,9 +85,8 @@ class MatrixInverterView(APIView):
 
         new_matrix = np.array(new_matrix)
 
-        try:
-            inverse_matrix = np.linalg.inv(new_matrix)
-        except np.linalg.LinAlgError as e:
+        inverse_matrix = MatrixCalculator.calculate_inverse_matrix(new_matrix)
+        if inverse_matrix is None:
             return Response("Определитель матрицы равен нулю", 400)
 
         for row in inverse_matrix:
