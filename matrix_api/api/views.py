@@ -1,15 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 import numpy as np
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .matrix_calculator import MatrixCalculator
-from .Models import MatrixInverter
-from .serializers import MatrixSerializer
+
+from matrix_api.api.models import MatrixInverter
+from matrix_api.app.matrix_calculator import MatrixCalculator
+from matrix_api.api.serializers import MatrixSerializer
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
-
-
-
 
 # Create your views here.
 class MatrixInverterView(APIView):
