@@ -1,6 +1,6 @@
 import numpy as np
 from django.test import TestCase
-from matrix_api.app.matrix_calculator import MatrixCalculator
+from matrix_api.matrix_inverter.func import MatrixCalculator
 
 
 class InverseMatrixTests(TestCase):

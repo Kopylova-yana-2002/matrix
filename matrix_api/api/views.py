@@ -1,12 +1,12 @@
-from django.shortcuts import render
 import numpy as np
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from matrix_api.api.models import MatrixInverter
-from matrix_api.app.matrix_calculator import MatrixCalculator
-from matrix_api.api.serializers import MatrixSerializer
+from .models import MatrixInverter, PillowImage
+from .serializers import MatrixSerializer, PillowImageSerializer
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+import time
+
 
 # Create your views here.
 class MatrixInverterView(APIView):
@@ -41,9 +41,10 @@ class MatrixInverterView(APIView):
                                  response_only=True,
                                  status_codes=[400]
                                  )
-                                ]
+                  ]
     )
     def get(self, request):
+        from matrix_api.matrix_inverter import MatrixCalculator
         size = request.GET.get('size', None)
 
         if size is None:
@@ -93,3 +94,17 @@ class MatrixInverterView(APIView):
         matrixInverter = MatrixInverter(size, new_matrix, inverse_matrix)
         serializer_for_request = MatrixSerializer(instance=matrixInverter)
         return Response(serializer_for_request.data, 200)
+
+
+class ImageView(APIView):
+    def get(self, request):
+        from matrix_api.matrix_inverter import generate_image, encode_image
+        ts = str(time.time()).replace('.', '-')
+        image_path = f'app/images/{ts}.jpg'
+        generate_image(image_path)
+        image_string = encode_image(image_path)
+
+        image_result = PillowImage(image_string, 'utf-8')
+        serializer_for_request = PillowImageSerializer(instance=image_result)
+
+        return Response(serializer_for_request.data)
