@@ -1,9 +1,9 @@
 from django.http import HttpResponse
 import numpy as np
+from inverter import MatrixCalculator
 
 
 def inverse(request):
-    from matrix_api.matrix_inverter import MatrixCalculator
     size = request.GET.get('size', None)
 
     if size is None:

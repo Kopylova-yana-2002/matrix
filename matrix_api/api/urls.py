@@ -11,6 +11,5 @@ urlpatterns = [
             url_name="schema"
         ),
         name="swagger-ui",
-    ),
-    path('img', views.ImageView.as_view(), name='image'),
+    )
 ]

@@ -29,12 +29,11 @@ environ.Env.read_env('/env_file/.env')
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+#SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY='fjbfvjd'
 ALLOWED_HOSTS = ['*']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-
-
 
 # Application definition
 
@@ -46,8 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app',
-    'rest_framework',
     'api',
+    'rest_framework',
     'drf_spectacular'
 ]
 
@@ -79,7 +78,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = env('WSGI_APPLICATION')
+#WSGI_APPLICATION = env('WSGI_APPLICATION')
 
 
 
@@ -129,8 +128,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = env('STATIC_ROOT')
-
+#STATIC_ROOT = env('STATIC_ROOT')
+STATIC_ROOT='static/'
+STATIC_PATH_NGINX = '/var/www/static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

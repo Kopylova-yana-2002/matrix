@@ -8,5 +8,5 @@ COPY matrix_api app
 ADD .env /env_file/.env
 WORKDIR /app
 RUN python ./manage.py migrate
-RUN python manage.py collectstatic
+RUN python ./manage.py collectstatic
 #EXPOSE 8000

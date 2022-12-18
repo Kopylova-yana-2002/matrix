@@ -5,6 +5,6 @@ from . import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('func_app/', include('app.urls')),
-    path('calculator/', include('api.urls'))
+    path('app/', include('app.urls')),
+    path('api/', include('api.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -2,10 +2,11 @@ import numpy as np
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import MatrixInverter, PillowImage
-from .serializers import MatrixSerializer, PillowImageSerializer
+from .models import MatrixInverter
+from .serializers import MatrixSerializer
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 import time
+from inverter import MatrixCalculator
 
 
 # Create your views here.
@@ -44,7 +45,6 @@ class MatrixInverterView(APIView):
                   ]
     )
     def get(self, request):
-        from matrix_api.matrix_inverter import MatrixCalculator
         size = request.GET.get('size', None)
 
         if size is None:
@@ -55,56 +55,34 @@ class MatrixInverterView(APIView):
         except:
             return Response('Размер не число', 400)
 
-        if size <= 0:
-            return Response('Размер меньше или равен 0', 400)
+        matrix_str = request.GET.get('matrix', None)
 
-        matrix = request.GET.get('matrix', None)
-
-        if matrix is None:
+        if matrix_str is None:
             return Response('Матрица не указана', 400)
 
-        matrix = matrix.split('-')
+        matrix_rows_str = matrix_str.split('-')
 
-        new_matrix = []
+        matrix = []
 
-        if len(matrix) != size:
-            return Response('Матрица неверного размера', 400)
-
-        for row in matrix:
+        for row in matrix_rows_str:
             try:
                 row = list(map(float, row.split('_')))
             except:
                 return Response('В матрице содержатся недопустимые значения', 400)
 
-            if len(row) != size:
-                return Response('Неверный размер строки в матрице', 400)
+            matrix.append(row)
 
-            new_matrix.append(row)
+        matrix = np.array(matrix)
 
-        new_matrix = np.array(new_matrix)
+        success, result = MatrixCalculator.calculate_inverse_matrix(size, matrix)
 
-        inverse_matrix = MatrixCalculator.calculate_inverse_matrix(new_matrix)
-        if inverse_matrix is None:
-            return Response("Определитель матрицы равен нулю", 400)
+        if not success:
+            return Response(result, 400)
 
-        for row in inverse_matrix:
+        for row in result:
             for i in range(len(row)):
                 row[i] = round(row[i], 3)
 
-        matrixInverter = MatrixInverter(size, new_matrix, inverse_matrix)
-        serializer_for_request = MatrixSerializer(instance=matrixInverter)
+        matrix_inverter = MatrixInverter(size, matrix, result)
+        serializer_for_request = MatrixSerializer(instance=matrix_inverter)
         return Response(serializer_for_request.data, 200)
-
-
-class ImageView(APIView):
-    def get(self, request):
-        from matrix_api.matrix_inverter import generate_image, encode_image
-        ts = str(time.time()).replace('.', '-')
-        image_path = f'app/images/{ts}.jpg'
-        generate_image(image_path)
-        image_string = encode_image(image_path)
-
-        image_result = PillowImage(image_string, 'utf-8')
-        serializer_for_request = PillowImageSerializer(instance=image_result)
-
-        return Response(serializer_for_request.data)

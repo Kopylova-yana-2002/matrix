@@ -1,70 +1,36 @@
 <html>
-<head>
- <title>App page</title>
-</head>
-<body>
- <h2>App page</h2>
- <h3>Inverse matrix:</h3>
- <?php
- if (isset($_POST['size']) && isset($_POST['matrix'])){
- $myCurl = curl_init();
- curl_setopt_array($myCurl, array(
- CURLOPT_URL =>
-'http://nginxserver/api/?size='.$_POST['size'].'&matrix='.$_POST['matrix'],
- CURLOPT_RETURNTRANSFER => true,
- CURLOPT_HEADER => false,
- ));
- $response = curl_exec($myCurl);
- curl_close($myCurl);
+    <head>
+        <title>Вычисление обратной матрицы</title>
+    </head>
+    <body>
+        <h2>Вычисление обратной матрицы</h2>
+        <form action="index.php" method="post">
+        <b><label for="size_operand">Размер </label></b>
+        </br>
+        <input type="number" name="size" id="size" required>
+        </br>
+        </br>
+        <b><label for="matrix_operand">Матрица </label></b>
+        </br>
+        <p>Строки в матрице разделяются символом '-', а числа в одной строке разделены символом '_'</p>
+        <p>Пример для размера 2: 8_9-2_2</p>
+        <input type="string" name="matrix" id="matrix" required>
+        <input type="submit" value="RUN!">
+        </form>
+        <?php
+            if (isset($_POST['size']) && isset($_POST['matrix'])){
+            $myCurl = curl_init();
+            curl_setopt_array($myCurl, array(
+            CURLOPT_URL =>
+            'http://nginxserver/api/inverse/?size='.$_POST['size'].'&matrix='.$_POST['matrix'],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER => false,
+            ));
+            $response = curl_exec($myCurl);
+            curl_close($myCurl);
 
- echo "Ответ на Ваш запрос: ".$response;
- }
- ?>
- <form action="index.php" method="post">
- <label for="size_operand">Size </label>
- <input type="number" name="size" id="size" required>
- <label for="matrix_operand">Matrix </label>
- <input type="string" name="matrix" id="matrix" required>
- <input type="submit" value="RUN!">
- </form>
- <h3>Get image</h3>
- <?php
- if (isset($_POST['image'])){
-//функция генерации рандомной строки для именования картинки
- function generateRandomString($length = 10) {
- $characters =
-'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
- $charactersLength = strlen($characters);
- $randomString = '';
- for ($i = 0; $i < $length; $i++) {
- $randomString .= $characters[rand(0, $charactersLength
-- 1)];
- }
- return $randomString;
- }
- $myCurl = curl_init();
- curl_setopt_array($myCurl, array(
- CURLOPT_URL => 'http://nginxserver/api/img',
- CURLOPT_RETURNTRANSFER => true,
- CURLOPT_HEADER => false,
- ));
- $response = curl_exec($myCurl); //получена json-строка
- curl_close($myCurl);
- $response_array = json_decode($response, true); //декодирование json-строки в ассоциативный массив[29]
- var_dump($response_array);//вывод на страницу json-строки результата
- $base64_code = $response_array['image_base64'];
- $encoding = $response_array['encoding'];
- $image_path = "./images/".generateRandomString().".jpg";//путь к картинке относительный
- $image_path_full= "/var/www/html/".$image_path; // абсолютный путь к картинке
- $fp = fopen($image_path_full, "w+");// открытие файла на запись[30]
- fwrite($fp, base64_decode($base64_code)); //запись в файл декодированных байтов[31]
- fclose($fp);// закрытие файла
- echo '<img src="'.$image_path.'">'; // вывод картинки на страницу
- }
- ?>
- <form action="index.php" method="post">
- <input type="hidden" name="image" id ="image" value=1/>
- <input type="submit" value="GET IMAGE!">
- </form>
-</body>
+            echo "Ответ на Ваш запрос: ".$response;
+            }
+        ?>
+    </body>
 </html>

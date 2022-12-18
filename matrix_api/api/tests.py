@@ -40,11 +40,11 @@ class InverseMatrixAPITests(APITestCase):
         '''
         Тестирование запросов где размер <= 0
         '''
-        url = reverse('inverse') + '?size=0'
+        url = reverse('inverse') + '?size=0&matrix=2_2-3_4'
         response = self.client.get(url)
         self.assertEqual(response.data, 'Размер меньше или равен 0')
         self.assertEqual(response.status_code, 400)
-        url = reverse('inverse') + '?size=-5'
+        url = reverse('inverse') + '?size=-5&matrix=2_2-3_4'
         response = self.client.get(url)
         self.assertEqual(response.data, 'Размер меньше или равен 0')
         self.assertEqual(response.status_code, 400)
